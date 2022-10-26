@@ -15,7 +15,9 @@
  * @github https://github.com/Heyiki
  */
 
-class Index
+var_dump($_SERVER);
+
+/*class Index
 {
     # notion令牌
     private $token;
@@ -257,4 +259,4 @@ class Index
     }
 }
 
-print_r((new Index())->handle());
+print_r((new Index())->handle());*/
