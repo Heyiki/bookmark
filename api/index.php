@@ -17,7 +17,7 @@
 
 
 // 获取url参数
-$queryString = $_SERVER['QUERY_STRING'];
+$queryString = $_SERVER['REQUEST_URI'];
 $token = !empty($_ENV['NOTION_TOKEN']) ? $_ENV['NOTION_TOKEN'] : '';
 $databaseId = !empty($_ENV['DATABASE_ID']) ? $_ENV['DATABASE_ID'] : '';
 
