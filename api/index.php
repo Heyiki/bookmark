@@ -73,7 +73,7 @@ class Index
                 phpinfo();
                 break;
             default:
-                $this->retJson([],"{$this->method} is not exist",400);
+                echo "{$this->method} is not exist";
                 break;
         }
     }
