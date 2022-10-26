@@ -14,7 +14,7 @@
  * @author Heyiki
  * @github https://github.com/Heyiki
  */
-
+phpinfo();die;
 class Index
 {
     # notion令牌
