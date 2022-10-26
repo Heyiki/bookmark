@@ -33,6 +33,17 @@ if (!empty($queryString)) {
     $page = !empty($_REQUEST['p']) ? $_REQUEST['p'] : '';
 }
 
+if (!empty($method)) {
+    switch($this->method) {
+        case 'list':
+            getList();
+            break;
+        default:
+            echo "{$this->method} is not exist";
+            break;
+    }
+}
+
 function getList()
 {
     $params['page_size'] = $pageSize;
