@@ -38,7 +38,9 @@ class Index
 
     public function __construct()
     {
+        phpinfo();
         $this->token = !empty($_ENV['NOTION_TOKEN']) ? $_ENV['NOTION_TOKEN'] : '';
+        var_dump($this->token);
         $this->databaseId = !empty($_ENV['DATABASE_ID']) ? $_ENV['DATABASE_ID'] : '';
         if (empty($this->token) && empty($this->databaseId)) {
             return $this->retJson([],"No Access",403);
