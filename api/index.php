@@ -38,6 +38,7 @@ class Index
 
     public function __construct()
     {
+        var_dump($_SERVER);die;
         $this->token = !empty($_ENV['NOTION_TOKEN']) ? $_ENV['NOTION_TOKEN'] : '';
         $this->databaseId = !empty($_ENV['DATABASE_ID']) ? $_ENV['DATABASE_ID'] : '';
         if (empty($this->token) && empty($this->databaseId)) {
