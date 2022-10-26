@@ -15,7 +15,7 @@
  * @github https://github.com/Heyiki
  */
 
-/*class Index
+class Index
 {
     # notion令牌
     private $token;
@@ -56,8 +56,23 @@
 
     public function handle()
     {
-        # 调用指定的方法
-        return method_exists($this, $this->method) ? call_user_func([$this, $this->method]) : $this->retJson([],"{$this->method} is not exist",400);
+        switch($this->method) {
+            case 'list':
+                $this->list();
+                break;
+            case 'create':
+                $this->create();
+                break;
+            case 'edit':
+                $this->edit();
+                break;
+            case 'delete':
+                $this->delete();
+                break;
+            default:
+                $this->retJson([],"{$this->method} is not exist",400);
+                break;
+        }
     }
 
     # 列表
@@ -238,5 +253,4 @@
     }
 }
 
-print_r((new Index())->handle());*/
-phpinfo();
+print_r((new Index())->handle());
