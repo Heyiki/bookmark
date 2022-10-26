@@ -15,7 +15,86 @@
  * @github https://github.com/Heyiki
  */
 
-var_dump($_SERVER);
+
+// 获取url参数
+$queryString = $_SERVER['QUERY_STRING'];
+$token = !empty($_ENV['NOTION_TOKEN']) ? $_ENV['NOTION_TOKEN'] : '';
+$databaseId = !empty($_ENV['DATABASE_ID']) ? $_ENV['DATABASE_ID'] : '';
+
+if (!empty($queryString)) {
+    // 解析获取参数
+    parse_str($queryString,$params);
+    $method = !empty($_REQUEST['m']) ? $_REQUEST['m'] : '';
+    $pageId = !empty($_REQUEST['pid']) ? $_REQUEST['pid'] : '';
+    $value['title'] = !empty($_REQUEST['t']) ? $_REQUEST['t'] : '';
+    $value['url'] = !empty($_REQUEST['u']) ? $_REQUEST['u'] : '';
+    $value['tab'] = !empty($_REQUEST['tb']) ? $_REQUEST['tb'] : '';
+    $pageSize = !empty($_REQUEST['s']) ? (int)$_REQUEST['s'] : 10;
+    $page = !empty($_REQUEST['p']) ? $_REQUEST['p'] : '';
+}
+
+function getList()
+{
+    $params['page_size'] = $pageSize;
+    if($page) {
+        $params['start_cursor'] = $page;
+    }
+    $res = curlSend('https://api.notion.com/v1/databases/'.$databaseId.'/query',$params);
+    $list = [];
+    if (!empty($res['results'])) {
+        $data = $res['results'];
+        foreach ($data as $v) {
+            $list[] = [
+                'id'=>$v['id'],
+                'tab'=>$v['properties']['tab']['rich_text'][0]['text']['content'],
+                'title'=>$v['properties']['title']['title'][0]['text']['content'],
+                'url'=>$v['properties']['url']['url'],
+            ];
+        }
+    }
+
+    exit(json_encode(['code'=>200,'msg'=>'ok','data'=>[
+            'next_cursor'=>!empty($res['next_cursor']) ? $res['next_cursor'] : '',
+            'list'=>$list,
+        ]]));
+}
+
+function curlSend($url = '', $data = [], $method = 'POST')
+{
+    $curl = curl_init();
+
+    $options = [
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => $method,
+        CURLOPT_HTTPHEADER => [
+            'Notion-Version: 2022-06-28',
+            'accept: application/json',
+            'authorization: Bearer ' . $this->token,
+            'content-type: application/json'
+        ],
+    ];
+    if (!empty($data)) {
+        $options[CURLOPT_POSTFIELDS] = json_encode($data,JSON_UNESCAPED_UNICODE);
+    }
+    curl_setopt_array($curl, $options);
+
+    $response = curl_exec($curl);
+    $err = curl_error($curl);
+
+    curl_close($curl);
+
+    if ($err) {
+        return $this->retJson([],$err,400);
+    } else {
+        return json_decode(htmlspecialchars_decode($response),true);
+    }
+}
+
 
 /*class Index
 {
