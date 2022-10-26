@@ -38,9 +38,7 @@ class Index
 
     public function __construct()
     {
-        phpinfo();
         $this->token = !empty($_ENV['NOTION_TOKEN']) ? $_ENV['NOTION_TOKEN'] : '';
-        var_dump($this->token);
         $this->databaseId = !empty($_ENV['DATABASE_ID']) ? $_ENV['DATABASE_ID'] : '';
         if (empty($this->token) && empty($this->databaseId)) {
             return $this->retJson([],"No Access",403);
@@ -60,7 +58,7 @@ class Index
     {
         switch($this->method) {
             case 'list':
-                $this->list();
+                $this->getList();
                 break;
             case 'create':
                 $this->create();
@@ -71,6 +69,9 @@ class Index
             case 'delete':
                 $this->delete();
                 break;
+            case 'edition':
+                phpinfo();
+                break;
             default:
                 $this->retJson([],"{$this->method} is not exist",400);
                 break;
@@ -78,7 +79,7 @@ class Index
     }
 
     # 列表
-    public function list()
+    public function getList()
     {
         $params['page_size'] = $this->pageSize;
         if($this->page) {
