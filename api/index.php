@@ -42,10 +42,11 @@ class Index
 
     public function __construct()
     {
+        error_reporting(E_ALL ^ E_NOTICE);
         $this->token = !empty($_ENV['NOTION_TOKEN']) ? $_ENV['NOTION_TOKEN'] : '';
         $this->databaseId = !empty($_ENV['DATABASE_ID']) ? $_ENV['DATABASE_ID'] : '';
         if (empty($this->token) && empty($this->databaseId)) {
-            return $this->retJson([],"No Access",403);
+            $this->retJson([],"NOTION_TOKEN and DATABASE_ID cannot be empty",400);
         }
         $queryString = !empty($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
         if (!empty($queryString)) {
@@ -70,7 +71,7 @@ class Index
     }
 
     # 列表
-    public function list()
+    public function rows()
     {
         $params = $this->filterCriteria();
         $res = $this->curlSend('https://api.notion.com/v1/databases/'.$this->databaseId.'/query',$params);
@@ -86,7 +87,7 @@ class Index
                 ];
             }
         }
-        return $this->retJson(
+        $this->retJson(
             [
                 'next_cursor'=>!empty($res['next_cursor']) ? $res['next_cursor'] : '',
                 'list'=>$list,
@@ -147,7 +148,7 @@ class Index
             'properties'=>$this->structure($title,$url,$tab),
         ];
         $res = $this->curlSend('https://api.notion.com/v1/pages',$data);
-        return $this->retJson($res,'Created successfully');
+        $this->retJson($res,'Created successfully');
     }
 
     # 获取创建的结构
@@ -229,14 +230,14 @@ class Index
             $properties['url']['url'] = $url;
         }
         $res = $this->curlSend('https://api.notion.com/v1/pages/'.$this->pageId,['properties'=>$properties],'PATCH');
-        return $this->retJson($res,'Updated successfully');
+        $this->retJson($res,'Updated successfully');
     }
 
     # 删除
     public function delete()
     {
         $res = $this->curlSend('https://api.notion.com/v1/blocks/'.$this->pageId,[],'DELETE');
-        return $this->retJson($res,'Deleted successfully');
+        $this->retJson($res,'Deleted successfully');
     }
 
     private function curlSend($url = '', $data = [], $method = 'POST')
@@ -269,7 +270,7 @@ class Index
         curl_close($curl);
 
         if ($err) {
-            return $this->retJson([],$err,400);
+            $this->retJson([],$err,400);
         } else {
             return json_decode(htmlspecialchars_decode($response),true);
         }
