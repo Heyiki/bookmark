@@ -45,6 +45,7 @@ class Index
         }
         $queryString = !empty($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
         if (!empty($queryString)) {
+            parse_str($queryString,$params);
             $this->method = !empty($params['m']) ? $params['m'] : '';
             $this->pageId = !empty($params['pid']) ? $params['pid'] : '';
             $this->value['title'] = !empty($params['t']) ? $params['t'] : '';
