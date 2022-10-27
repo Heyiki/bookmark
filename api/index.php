@@ -15,6 +15,9 @@
  * @github https://github.com/Heyiki
  */
 
+echo "<pre>";
+print_r($_SERVER);
+die;
 
 // 获取url参数
 $queryString = $_SERVER['REQUEST_URI'];
