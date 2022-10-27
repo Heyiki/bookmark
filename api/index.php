@@ -58,30 +58,12 @@ class Index
 
     public function handle()
     {
-        switch($this->method) {
-            case 'list':
-                $this->getList();
-                break;
-            case 'create':
-                $this->create();
-                break;
-            case 'edit':
-                $this->edit();
-                break;
-            case 'delete':
-                $this->delete();
-                break;
-            case 'edition':
-                phpinfo();
-                break;
-            default:
-                echo "{$this->method} is not exist";
-                break;
-        }
+        # 调用指定的方法
+        return method_exists($this, $this->method) ? call_user_func([$this, $this->method]) : $this->retJson([],"{$this->method} is not exist",400);
     }
 
     # 列表
-    public function getList()
+    public function list()
     {
         $params['page_size'] = $this->pageSize;
         if($this->page) {
