@@ -33,6 +33,12 @@ class Index
     private $pageSize = 10;
     # 页码
     private $page;
+    # 筛选标题
+    private $titleFilter;
+    # 筛选链接
+    private $urlFilter;
+    # 筛选标签
+    private $tabFilter;
 
     public function __construct()
     {
@@ -51,6 +57,9 @@ class Index
             $this->value['tab'] = !empty($params['tb']) ? $params['tb'] : '';
             $this->pageSize = !empty($params['s']) ? (int)$params['s'] : 10;
             $this->page = !empty($params['p']) ? $params['p'] : '';
+            $this->titleFilter = !empty($params['tf']) ? $params['tf'] : '';
+            $this->urlFilter = !empty($params['uf']) ? $params['uf'] : '';
+            $this->tabFilter = !empty($params['tbf']) ? $params['tbf'] : '';
         }
     }
 
@@ -63,10 +72,7 @@ class Index
     # 列表
     public function list()
     {
-        $params['page_size'] = $this->pageSize;
-        if($this->page) {
-            $params['start_cursor'] = $this->page;
-        }
+        $params = $this->filterCriteria();
         $res = $this->curlSend('https://api.notion.com/v1/databases/'.$this->databaseId.'/query',$params);
         $list = [];
         if (!empty($res['results'])) {
@@ -86,6 +92,44 @@ class Index
                 'list'=>$list,
             ]
         );
+    }
+
+    # 列表筛选条件
+    private function filterCriteria()
+    {
+        $params['page_size'] = $this->pageSize;
+        if($this->page) {
+            $params['start_cursor'] = $this->page;
+        }
+        if($this->titleFilter || $this->urlFilter || $this->tabFilter) {
+            $filter = [];
+            if($this->titleFilter){
+                $filter[] = [
+                    "property"=> "title",
+                    "title"=> [
+                        "contains"=> $this->titleFilter
+                    ]
+                ];
+            }
+            if($this->urlFilter){
+                $filter[] = [
+                    "property"=> "url",
+                    "url"=> [
+                        "contains"=> $this->urlFilter
+                    ]
+                ];
+            }
+            if($this->tabFilter){
+                $filter[] = [
+                    "property"=> "tab",
+                    "rich_text"=> [
+                        "contains"=> $this->tabFilter
+                    ]
+                ];
+            }
+            $params['filter'] = ["and" => $filter];
+        }
+        return $params;
     }
 
     # 创建

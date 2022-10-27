@@ -26,6 +26,10 @@ name:DATABASE_ID  value:database_id值
 域名/api?m=list  访问列表（每页默认返回10条）
 域名/api?m=list&s=20  访问列表（每页返回20条）
 域名/api?m=list&p=【列表返回next_cursor值】  访问列表（跳转到某一页）
+域名/api?m=list&tf=筛选标题
+域名/api?m=list&uf=筛选链接
+域名/api?m=list&tbf=筛选标签
+域名/api?m=list&tf=筛选标题&tbf=筛选标签
 
 创建：
 域名/api?t=标题&u=链接&tb=标签  标签默认值：公共，链接必填，标题为空默认取链接赋值
