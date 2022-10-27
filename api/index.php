@@ -1,7 +1,7 @@
 <?php
 
 /**
- * 简单浏览器书签
+ * 简易书签接口
  *
  * 利用notion api + php + vercel + github 制作
  *
@@ -11,8 +11,6 @@
  * vercel
  * https://vercel.com/
  *
- * @author Heyiki
- * @github https://github.com/Heyiki
  */
 
 class Index
