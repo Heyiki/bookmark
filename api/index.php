@@ -15,102 +15,7 @@
  * @github https://github.com/Heyiki
  */
 
-echo "<pre>";
-print_r($_SERVER);
-die;
-
-// 获取url参数
-$queryString = $_SERVER['REQUEST_URI'];
-$token = !empty($_ENV['NOTION_TOKEN']) ? $_ENV['NOTION_TOKEN'] : '';
-$databaseId = !empty($_ENV['DATABASE_ID']) ? $_ENV['DATABASE_ID'] : '';
-
-if (!empty($queryString)) {
-    // 解析获取参数
-    parse_str($queryString,$params);
-    $method = !empty($_REQUEST['m']) ? $_REQUEST['m'] : '';
-    $pageId = !empty($_REQUEST['pid']) ? $_REQUEST['pid'] : '';
-    $value['title'] = !empty($_REQUEST['t']) ? $_REQUEST['t'] : '';
-    $value['url'] = !empty($_REQUEST['u']) ? $_REQUEST['u'] : '';
-    $value['tab'] = !empty($_REQUEST['tb']) ? $_REQUEST['tb'] : '';
-    $pageSize = !empty($_REQUEST['s']) ? (int)$_REQUEST['s'] : 10;
-    $page = !empty($_REQUEST['p']) ? $_REQUEST['p'] : '';
-}
-
-if (!empty($method)) {
-    switch($this->method) {
-        case 'list':
-            getList();
-            break;
-        default:
-            echo "{$this->method} is not exist";
-            break;
-    }
-}
-
-function getList()
-{
-    $params['page_size'] = $pageSize;
-    if($page) {
-        $params['start_cursor'] = $page;
-    }
-    $res = curlSend('https://api.notion.com/v1/databases/'.$databaseId.'/query',$params);
-    $list = [];
-    if (!empty($res['results'])) {
-        $data = $res['results'];
-        foreach ($data as $v) {
-            $list[] = [
-                'id'=>$v['id'],
-                'tab'=>$v['properties']['tab']['rich_text'][0]['text']['content'],
-                'title'=>$v['properties']['title']['title'][0]['text']['content'],
-                'url'=>$v['properties']['url']['url'],
-            ];
-        }
-    }
-
-    exit(json_encode(['code'=>200,'msg'=>'ok','data'=>[
-            'next_cursor'=>!empty($res['next_cursor']) ? $res['next_cursor'] : '',
-            'list'=>$list,
-        ]]));
-}
-
-function curlSend($url = '', $data = [], $method = 'POST')
-{
-    $curl = curl_init();
-
-    $options = [
-        CURLOPT_URL => $url,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 30,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => $method,
-        CURLOPT_HTTPHEADER => [
-            'Notion-Version: 2022-06-28',
-            'accept: application/json',
-            'authorization: Bearer ' . $this->token,
-            'content-type: application/json'
-        ],
-    ];
-    if (!empty($data)) {
-        $options[CURLOPT_POSTFIELDS] = json_encode($data,JSON_UNESCAPED_UNICODE);
-    }
-    curl_setopt_array($curl, $options);
-
-    $response = curl_exec($curl);
-    $err = curl_error($curl);
-
-    curl_close($curl);
-
-    if ($err) {
-        return $this->retJson([],$err,400);
-    } else {
-        return json_decode(htmlspecialchars_decode($response),true);
-    }
-}
-
-
-/*class Index
+class Index
 {
     # notion令牌
     private $token;
@@ -133,20 +38,20 @@ function curlSend($url = '', $data = [], $method = 'POST')
 
     public function __construct()
     {
-        var_dump($_SERVER);die;
         $this->token = !empty($_ENV['NOTION_TOKEN']) ? $_ENV['NOTION_TOKEN'] : '';
         $this->databaseId = !empty($_ENV['DATABASE_ID']) ? $_ENV['DATABASE_ID'] : '';
         if (empty($this->token) && empty($this->databaseId)) {
             return $this->retJson([],"No Access",403);
         }
-
-        $this->method = !empty($_REQUEST['m']) ? $_REQUEST['m'] : '';
-        $this->pageId = !empty($_REQUEST['pid']) ? $_REQUEST['pid'] : '';
-        $this->value['title'] = !empty($_REQUEST['t']) ? $_REQUEST['t'] : '';
-        $this->value['url'] = !empty($_REQUEST['u']) ? $_REQUEST['u'] : '';
-        $this->value['tab'] = !empty($_REQUEST['tb']) ? $_REQUEST['tb'] : '';
-        $this->pageSize = !empty($_REQUEST['s']) ? (int)$_REQUEST['s'] : 10;
-        $this->page = !empty($_REQUEST['p']) ? $_REQUEST['p'] : '';
+        $queryString = !empty($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
+        if (!empty($queryString)) {
+            $this->method = !empty($params['m']) ? $params['m'] : '';
+            $this->pageId = !empty($params['pid']) ? $params['pid'] : '';
+            $this->value['title'] = !empty($params['t']) ? $params['t'] : '';
+            $this->value['url'] = !empty($params['u']) ? $params['u'] : '';
+            $this->value['tab'] = !empty($params['tb']) ? $params['tb'] : '';
+            $this->pageSize = !empty($params['s']) ? (int)$params['s'] : 10;
+            $this->page = !empty($params['p']) ? $params['p'] : '';
         }
     }
 
@@ -352,4 +257,4 @@ function curlSend($url = '', $data = [], $method = 'POST')
     }
 }
 
-print_r((new Index())->handle());*/
+print_r((new Index())->handle());
