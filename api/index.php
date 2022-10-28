@@ -54,7 +54,7 @@ class Index
         $this->url = $_GET['u'] ?? '';
         $this->tab = $_GET['tb'] ?? '';
         $this->pageSize = $_GET['s'] ?? 20;
-        $this->page = $_GET['m'] ?? '';
+        $this->page = $_GET['p'] ?? '';
         $this->titleFilter = $_GET['tf'] ?? '';
         $this->urlFilter = $_GET['uf'] ?? '';
         $this->tabFilter = $_GET['tbf'] ?? '';
