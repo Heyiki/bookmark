@@ -13,6 +13,8 @@
  *
  */
 
+header("Access-Control-Allow-Origin: *");
+
 class Index
 {
     # notion令牌
