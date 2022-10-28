@@ -33,9 +33,9 @@ name:`DATABASE_ID` value:database_id 值
 
 #### 列表操作：
 
-域名/api?m=rows 访问列表（每页默认返回 10 条）
+域名/api?m=rows 访问列表（每页默认返回 20 条）
 
-域名/api?m=rows&s=20 访问列表（每页返回 20 条）
+域名/api?m=rows&s=10 访问列表（每页返回 10 条）
 
 域名/api?m=rows&p=【列表返回 next_cursor 值】 访问列表（跳转到某一页）
 
@@ -49,12 +49,12 @@ name:`DATABASE_ID` value:database_id 值
 
 #### 创建：
 
-域名/api?t=标题&u=链接&tb=标签 标签默认值：公共，链接必填，标题为空默认取链接赋值
+域名/api?m=create&t=标题&u=链接&tb=标签 标签默认值：公共，链接必填，标题为空默认取链接赋值
 
 #### 编辑：
 
-域名/api?pid=列表对应的 id 值&t=标题&u=链接&tb=标签 pid 必填，标题、链接、标签有填写才修改
+域名/api?m=edit&pid=列表对应的 id 值&t=标题&u=链接&tb=标签 pid 必填，标题、链接、标签有填写才修改
 
 #### 删除：
 
-域名/api?pid=列表对应的 id 值 pid 必填
+域名/api?m=delete&pid=列表对应的 id 值 pid 必填

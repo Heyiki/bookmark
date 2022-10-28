@@ -16,52 +16,48 @@
 class Index
 {
     # notion令牌
-    private $token;
+    private string $token;
     # notion数据库id
-    private $databaseId;
+    private string $databaseId;
     # 方法名
-    private $method;
+    private string $method;
     # 列表id
-    private $pageId;
-    # 参数
-    private $value = [
-        'tab' => '',//标签
-        'title' => '',//标题
-        'url' => '',//链接
-    ];
+    private string $pageId;
+    # 标题
+    private string $title;
+    # 链接
+    private string $url;
+    # 标签
+    private string $tab;
     # 分页数
-    private $pageSize = 10;
+    private int $pageSize = 20;
     # 页码
-    private $page;
+    private string $page;
     # 筛选标题
-    private $titleFilter;
+    private string $titleFilter;
     # 筛选链接
-    private $urlFilter;
+    private string $urlFilter;
     # 筛选标签
-    private $tabFilter;
+    private string $tabFilter;
 
     public function __construct()
     {
         error_reporting(E_ALL ^ E_NOTICE);
-        $this->token = !empty($_ENV['NOTION_TOKEN']) ? $_ENV['NOTION_TOKEN'] : '';
-        $this->databaseId = !empty($_ENV['DATABASE_ID']) ? $_ENV['DATABASE_ID'] : '';
+        $this->token = $_ENV['NOTION_TOKEN'] ?? '';
+        $this->databaseId = $_ENV['DATABASE_ID'] ?? '';
         if (empty($this->token) && empty($this->databaseId)) {
             $this->retJson([],"NOTION_TOKEN and DATABASE_ID cannot be empty",400);
         }
-        $queryString = !empty($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
-        if (!empty($queryString)) {
-            parse_str($queryString,$params);
-            $this->method = !empty($params['m']) ? $params['m'] : '';
-            $this->pageId = !empty($params['pid']) ? $params['pid'] : '';
-            $this->value['title'] = !empty($params['t']) ? $params['t'] : '';
-            $this->value['url'] = !empty($params['u']) ? $params['u'] : '';
-            $this->value['tab'] = !empty($params['tb']) ? $params['tb'] : '';
-            $this->pageSize = !empty($params['s']) ? (int)$params['s'] : 10;
-            $this->page = !empty($params['p']) ? $params['p'] : '';
-            $this->titleFilter = !empty($params['tf']) ? $params['tf'] : '';
-            $this->urlFilter = !empty($params['uf']) ? $params['uf'] : '';
-            $this->tabFilter = !empty($params['tbf']) ? $params['tbf'] : '';
-        }
+        $this->method = $_GET['m'] ?? '';
+        $this->pageId = $_GET['pid'] ?? '';
+        $this->title = $_GET['t'] ?? '';
+        $this->url = $_GET['u'] ?? '';
+        $this->tab = $_GET['tb'] ?? '';
+        $this->pageSize = $_GET['s'] ?? 20;
+        $this->page = $_GET['m'] ?? '';
+        $this->titleFilter = $_GET['tf'] ?? '';
+        $this->urlFilter = $_GET['uf'] ?? '';
+        $this->tabFilter = $_GET['tbf'] ?? '';
     }
 
     public function handle()
@@ -136,23 +132,22 @@ class Index
     # 创建
     public function create()
     {
-        list($tab,$title,$url) = $this->value;
-        if(empty($url)) $this->retJson([],'Link cannot be empty',400);
-        $title = !empty($title) ? $title : $url;
-        $tab = !empty($tab) ? $tab : '公共';
+        if(empty($this->url)) $this->retJson([],'Link cannot be empty',400);
+        $this->title = $this->title ?? $this->url;
+        $this->tab = $this->tab ?? '公共';
         $data = [
             'parent'=>[
                 'type' => 'database_id',
                 'database_id' => $this->databaseId
             ],
-            'properties'=>$this->structure($title,$url,$tab),
+            'properties'=>$this->structure(),
         ];
         $res = $this->curlSend('https://api.notion.com/v1/pages',$data);
         $this->retJson($res,'Created successfully');
     }
 
     # 获取创建的结构
-    private function structure($title = '', $url = '', $tab = '')
+    private function structure()
     {
         $properties = [
             'tab'=>[
@@ -207,27 +202,26 @@ class Index
                 ],
             ]
         ];
-        return json_decode(str_replace(['#title','#url','#tab'],[$title,$url,$tab],json_encode($properties)),true);
+        return json_decode(str_replace(['#title','#url','#tab'],[$this->title,$this->url,$this->tab],json_encode($properties)),true);
     }
 
     # 编辑
     public function edit()
     {
         if (empty($this->pageId)) $this->retJson([],'Unknown object',400);
-        list($tab,$title,$url) = $this->value;
         $preview = $this->curlSend('https://api.notion.com/v1/pages/'.$this->pageId,[],'GET');
-        $properties = !empty($preview['properties']) ? $preview['properties'] : [];
+        $properties = $preview['properties'] ?? [];
         if (empty($properties)) $this->retJson([],'Unknown object',400);
-        if (!empty($tab)) {
-            $properties['tab']['rich_text'][0]['text']['content'] = $tab;
-            $properties['tab']['rich_text'][0]['plain_text'] = $tab;
+        if (!empty($this->tab)) {
+            $properties['tab']['rich_text'][0]['text']['content'] = $this->tab;
+            $properties['tab']['rich_text'][0]['plain_text'] = $this->tab;
         }
-        if (!empty($title)) {
-            $properties['title']['title'][0]['text']['content'] = $title;
-            $properties['title']['title'][0]['plain_text'] = $title;
+        if (!empty($this->title)) {
+            $properties['title']['title'][0]['text']['content'] = $this->title;
+            $properties['title']['title'][0]['plain_text'] = $this->title;
         }
-        if (!empty($url)) {
-            $properties['url']['url'] = $url;
+        if (!empty($this->url)) {
+            $properties['url']['url'] = $this->url;
         }
         $res = $this->curlSend('https://api.notion.com/v1/pages/'.$this->pageId,['properties'=>$properties],'PATCH');
         $this->retJson($res,'Updated successfully');
