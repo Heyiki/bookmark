@@ -2,14 +2,13 @@
 
 class Info
 {
-    public function __construct(
-        public string $token = $_ENV['NOTION_TOKEN'] ?? '',
-        public string $method = $_GET['m'] ?? '',
-  ) {}
+    private string $method;
+    public function __construct() {
+        $this->method = $_GET['m'] ?? '';
+    }
 
     public function handle()
     {
-        var_dump($this->token);
         var_dump($this->method);
     }
 }
