@@ -55,7 +55,7 @@ class Index
         $this->title = $this->getParam('t');
         $this->url = $this->getParam('u');
         $this->tab = $this->getParam('tb');
-        $this->pageSize = $this->getParam('s') ?? 20;
+        $this->pageSize = (int)$this->getParam('s') ?? 20;
         $this->page = $this->getParam('p');
         $this->titleFilter = $this->getParam('tf');
         $this->urlFilter = $this->getParam('uf');
