@@ -50,22 +50,28 @@ class Index
         if (empty($this->token) && empty($this->databaseId)) {
             $this->retJson([],"NOTION_TOKEN and DATABASE_ID cannot be empty",400);
         }
-        $this->method = $_GET['m'] ?? '';
-        $this->pageId = $_GET['pid'] ?? '';
-        $this->title = $_GET['t'] ?? '';
-        $this->url = $_GET['u'] ?? '';
-        $this->tab = $_GET['tb'] ?? '';
-        $this->pageSize = $_GET['s'] ?? 20;
-        $this->page = $_GET['p'] ?? '';
-        $this->titleFilter = $_GET['tf'] ?? '';
-        $this->urlFilter = $_GET['uf'] ?? '';
-        $this->tabFilter = $_GET['tbf'] ?? '';
+        $this->method = $this->getParam('m') ?? '';
+        $this->pageId = $this->getParam('pid') ?? '';
+        $this->title = $this->getParam('t') ?? '';
+        $this->url = $this->getParam('u') ?? '';
+        $this->tab = $this->getParam('tb') ?? '';
+        $this->pageSize = $this->getParam('s') ?? 20;
+        $this->page = $this->getParam('p') ?? '';
+        $this->titleFilter = $this->getParam('tf') ?? '';
+        $this->urlFilter = $this->getParam('uf') ?? '';
+        $this->tabFilter = $this->getParam('tbf') ?? '';
     }
 
     public function handle()
     {
         # 调用指定的方法
         return method_exists($this, $this->method) ? call_user_func([$this, $this->method]) : $this->retJson([],"{$this->method} is not exist",400);
+    }
+
+    # 防sql注入
+    private function getParam($param)
+    {
+        return htmlentities(urldecode($_REQUEST[$param]), ENT_QUOTES, 'UTF-8');
     }
 
     # 列表
