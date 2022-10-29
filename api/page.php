@@ -22,7 +22,7 @@
     <div id="app"><App /></div>
 </body>
 <script>
-    const api = '<?= $_ENV['API_URL'] ?? '' ?>';
+    const api = '<?php echo $_ENV['API_URL'] ?? '' ?>';
     (function (v,w,d,q,_self){
         class page{
             constructor(...params) {
