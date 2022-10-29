@@ -19,10 +19,29 @@
     <script src="https://cdn.jsdelivr.net/npm/element-ui/lib/index.js"></script>
 </head>
 <body>
-    <div id="app"><App /></div>
+    <div id="app" style="min-height: calc(100vh - 48px)"><App /></div>
+    <footer id="footer">
+        <p style="margin: 0;padding: 0">
+            <a style="margin-inline:5px;text-decoration:none;" target="_blank" href="https://www.heyiki.top/">
+                <img src="https://img.shields.io/badge/Author-Heyiki-blue" title="©2022 <?php if(date('Y') != '2022'){echo ' - '. date('Y');}?> 🥝 Heyiki">
+            </a>
+            <a style="margin-inline:5px;text-decoration:none;" target="_blank" rel="nofollow" href="https://notion.so/">
+                <img src="https://img.shields.io/badge/Support-Notion-orange" title="本站项目由Notion支持">
+            </a>
+            <a style="margin-inline:5px;text-decoration:none;" target="_blank" rel="nofollow" href="https://vercel.com/">
+                <img src="https://img.shields.io/badge/Support-Vercel-critical" title="本站项目由Vercel支持">
+            </a>
+            <a style="margin-inline:5px;text-decoration:none;" target="_blank" rel="nofollow" href="https://www.jsdelivr.com/">
+                <img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&amp;logo=jsDelivr" title="本站使用JsDelivr为静态资源提供CDN加速">
+            </a>
+            <a style="margin-inline:5px;text-decoration:none;" target="_blank" rel="nofollow" href="https://github.com/">
+                <img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&amp;logo=GitHub" title="本站项目由Gtihub托管">
+            </a>
+        </p>
+    </footer>
 </body>
 <script>
-    const api = '<?php echo $_ENV['API_URL'] ?? '' ?>';
+    const api = '<?php echo $_ENV['API_URL'] ?? ''; ?>';
     (function (v,w,d,q,_self){
         class page{
             constructor(...params) {
