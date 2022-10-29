@@ -47,6 +47,10 @@ name:`DATABASE_ID` value:database_id 值
 
 域名/api?m=rows&tf=筛选标题&tbf=筛选标签
 
+#### 详情：
+
+域名/api?m=detail&pid=列表对应的 id 值
+
 #### 创建：
 
 域名/api?m=create&t=标题&u=链接&tb=标签 标签默认值：公共，链接必填，标题为空默认取链接赋值

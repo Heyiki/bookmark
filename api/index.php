@@ -87,7 +87,7 @@ class Index
         }
         $this->retJson(
             [
-                'next_cursor'=>!empty($res['next_cursor']) ? $res['next_cursor'] : '',
+                'next_cursor'=>$res['next_cursor'] ?? '',
                 'list'=>$list,
             ]
         );
@@ -129,6 +129,21 @@ class Index
             $params['filter'] = ["and" => $filter];
         }
         return $params;
+    }
+
+    # 详情
+    public function detail()
+    {
+        if (empty($this->pageId)) $this->retJson([],'Unknown object',400);
+        $preview = $this->curlSend('https://api.notion.com/v1/pages/'.$this->pageId,[],'GET');
+        $properties = $preview['properties'] ?? [];
+        if (empty($properties)) $this->retJson([],'Unknown object',400);
+        $this->retJson([
+            'id'=>$this->pageId,
+            'title'=>$properties['title']['title'][0]['text']['content'],
+            'url'=>$properties['url']['url'],
+            'tab'=>$properties['tab']['rich_text'][0]['text']['content'],
+        ]);
     }
 
     # 创建
