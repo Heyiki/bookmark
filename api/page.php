@@ -166,7 +166,7 @@
                         },
                         getList(params){
                             if (!params.s) {
-                                params.s = 10
+                                params.s = 20
                             }
                             const loading = this.$loading({
                                 lock: true,
@@ -226,7 +226,7 @@
                                             message: 'Updated failed'
                                         })
                                     } else {
-                                        this.getList()
+                                        this.getList(this.listSearch)
                                         this.dialogFormVisible = false
                                         this.$notify({
                                             title: 'Success',
@@ -250,7 +250,7 @@
                                             message: 'Created failed'
                                         })
                                     } else {
-                                        this.getList()
+                                        this.getList(this.listSearch)
                                         this.dialogFormVisible = false
                                         this.$notify({
                                             title: 'Success',
@@ -269,7 +269,7 @@
                                         message: 'Delete failed'
                                     })
                                 } else {
-                                    this.getList()
+                                    this.getList(this.listSearch)
                                     this.$notify({
                                         title: 'Success',
                                         message: 'Delete successfully',

@@ -50,16 +50,16 @@ class Index
         if (empty($this->token) && empty($this->databaseId)) {
             $this->retJson([],"NOTION_TOKEN and DATABASE_ID cannot be empty",400);
         }
-        $this->method = $this->getParam('m') ?? '';
-        $this->pageId = $this->getParam('pid') ?? '';
-        $this->title = $this->getParam('t') ?? '';
-        $this->url = $this->getParam('u') ?? '';
-        $this->tab = $this->getParam('tb') ?? '';
+        $this->method = $this->getParam('m');
+        $this->pageId = $this->getParam('pid');
+        $this->title = $this->getParam('t');
+        $this->url = $this->getParam('u');
+        $this->tab = $this->getParam('tb');
         $this->pageSize = $this->getParam('s') ?? 20;
-        $this->page = $this->getParam('p') ?? '';
-        $this->titleFilter = $this->getParam('tf') ?? '';
-        $this->urlFilter = $this->getParam('uf') ?? '';
-        $this->tabFilter = $this->getParam('tbf') ?? '';
+        $this->page = $this->getParam('p');
+        $this->titleFilter = $this->getParam('tf');
+        $this->urlFilter = $this->getParam('uf');
+        $this->tabFilter = $this->getParam('tbf');
     }
 
     public function handle()
@@ -71,7 +71,7 @@ class Index
     # 防sql注入
     private function getParam($param)
     {
-        return htmlentities(urldecode($_REQUEST[$param]), ENT_QUOTES, 'UTF-8');
+        return !empty($_REQUEST[$param]) ? htmlentities(urldecode($_REQUEST[$param]), ENT_QUOTES, 'UTF-8') : '';
     }
 
     # 列表
