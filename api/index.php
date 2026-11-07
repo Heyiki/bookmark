@@ -396,8 +396,6 @@ final class Index
         $error = curl_error($curl);
         $httpCode = (int)curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-        curl_close($curl);
-
         if ($response === false) {
             $this->retJson([], 'cURL error: ' . $error, 502);
         }
